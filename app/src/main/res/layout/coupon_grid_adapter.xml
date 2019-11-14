@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:layout_width="173dp"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:layout_marginBottom="20dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/coupon_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="1"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/coupon_hash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                android:text="#asdlkşjşlkjnbasödalşjşkj"
+                android:textAlignment="center"
+                android:textColor="#037c05"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/coupon_reward"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="5dp"
+                android:text="100 tl discount on 1000 tl shopping"
+                android:textAlignment="center"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/coupon_button"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:layout_marginTop="50dp"
+                android:background="@android:color/holo_blue_dark"
+                android:padding="10dp"
+                android:text="Earn this coupon!"
+                android:textColor="@android:color/black"
+                android:textStyle="bold">
+
+            </Button>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

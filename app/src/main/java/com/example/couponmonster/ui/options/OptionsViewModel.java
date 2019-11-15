@@ -11,7 +11,7 @@ public class OptionsViewModel extends ViewModel {
 
     public OptionsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is options fragment");
+        mText.setValue("Settings:");
     }
 
     public LiveData<String> getText() {

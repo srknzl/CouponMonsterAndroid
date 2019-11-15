@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.couponmonster.OnlinePerson;
+import com.example.couponmonster.Data.OnlinePerson;
 import com.example.couponmonster.R;
 
 import java.util.Vector;

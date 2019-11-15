@@ -1,4 +1,4 @@
-package com.example.couponmonster;
+package com.example.couponmonster.Data;
 
 import java.util.Date;
 

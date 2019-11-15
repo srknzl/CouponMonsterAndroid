@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.couponmonster.Coupon;
+import com.example.couponmonster.Data.Coupon;
 
 import java.util.Date;
 import java.util.Vector;

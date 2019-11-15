@@ -10,11 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.couponmonster.Coupon;
+import com.example.couponmonster.Data.Coupon;
 import com.example.couponmonster.R;
 import com.example.couponmonster.ui.CouponGridAdapter;
 

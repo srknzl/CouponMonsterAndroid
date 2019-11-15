@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.couponmonster.Coupon;
+import com.example.couponmonster.Data.Coupon;
 import com.example.couponmonster.R;
 
 import java.util.Vector;

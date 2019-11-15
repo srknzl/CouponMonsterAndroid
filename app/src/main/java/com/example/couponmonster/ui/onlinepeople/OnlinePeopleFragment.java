@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.couponmonster.OnlinePerson;
+import com.example.couponmonster.Data.OnlinePerson;
 import com.example.couponmonster.R;
 import com.example.couponmonster.ui.OnlineGridAdapter;
 

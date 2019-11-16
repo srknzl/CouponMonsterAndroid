@@ -46,7 +46,7 @@ public class CouponGridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent)  {
-        LayoutInflater inflater = (LayoutInflater) this.context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        final LayoutInflater inflater = (LayoutInflater) this.context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View gridView = inflater.inflate(R.layout.coupon_grid_adapter, null);
         Coupon SingleCoupon = getItem(position);
         Button CouponButton = (Button) gridView.findViewById(R.id.coupon_button);
@@ -62,8 +62,12 @@ public class CouponGridAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage("Button click")
-                            .setTitle("Button");
+
+                    View questionView = inflater.inflate(R.layout.question_dialog, null);
+
+                    TextView question = (TextView) questionView.findViewById(R.id.question);
+                    question.setText("2+2");
+                    builder.setView(questionView);
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }

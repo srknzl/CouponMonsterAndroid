@@ -1,15 +1,21 @@
 <resources>
     <string name="app_name">Coupon monster</string>
     <string name="title_activity_main">MainActivity</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="nav_header_title">Coupon Monster</string>
     <string name="nav_header_subtitle">serkan.ozel@boun.edu.tr</string>
     <string name="nav_header_desc">Navigation</string>
+
     <string name="action_settings">Settings</string>
+
     <string name="home_desc">Select a coupon below: </string>
     <string name="home_conn_err">Please connect to server by going to settings tab! </string>
+
     <string name="text_options_welcome"> Settings: </string>
+
     <string name="menu_home">Home</string>
     <string name="menu_online">Online People</string>
     <string name="menu_options">Options</string>
@@ -23,5 +29,9 @@
     <string name="options_name">Name:</string>
     <string name="options_username">Username:</string>
     <string name="options_userdata_changer_button">Update</string>
+
+    <string name="question_remaining">Remaining Time:</string>
+    <string name="question_answer">Answer:</string>
+    <string name="question_button">Submit</string>
 
 </resources>

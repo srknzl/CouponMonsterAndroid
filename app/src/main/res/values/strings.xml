@@ -29,9 +29,13 @@
     <string name="options_name">Name:</string>
     <string name="options_username">Username:</string>
     <string name="options_userdata_changer_button">Update</string>
+    <string name="options_connect_text">Connect to server</string>
 
     <string name="question_remaining">Remaining Time: %1$d</string>
     <string name="question_answer">Answer:</string>
     <string name="question_button">Submit</string>
+
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

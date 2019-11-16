@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.couponmonster.Data.Coupon;
 import com.example.couponmonster.R;
 
+import java.util.Random;
 import java.util.Vector;
 
 public class CouponGridAdapter extends BaseAdapter {
@@ -65,22 +66,34 @@ public class CouponGridAdapter extends BaseAdapter {
             View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    final View questionView = inflater.inflate(R.layout.question_dialog, null);
-                    TextView question = questionView.findViewById(R.id.question);
-                    question.setText(SingleCoupon.getProblem());
-                    builder.setView(questionView);
-                    final AlertDialog dialog = builder.create();
-                    dialog.show();
-                    new CountDownTimer(SingleCoupon.getSolveTime()*1000, 1000) {
-                        Resources res = context.getResources();
-                        public void onTick(long millisUntilFinished) {
-                            ((TextView)questionView.findViewById(R.id.remaining_time)).setText(String.format(res.getString(R.string.question_remaining),millisUntilFinished/1000));
-                        }
-                        public void onFinish() {
-                            dialog.dismiss();
-                        }
-                    }.start();
+
+                    if(new Random().nextInt(10) < 5){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        final View questionView = inflater.inflate(R.layout.question_dialog, null);
+                        TextView question = questionView.findViewById(R.id.question);
+                        question.setText(SingleCoupon.getProblem());
+                        builder.setView(questionView);
+                        final AlertDialog dialog = builder.create();
+                        dialog.show();
+                        new CountDownTimer(SingleCoupon.getSolveTime()*1000, 1000) {
+                            Resources res = context.getResources();
+                            public void onTick(long millisUntilFinished) {
+                                ((TextView)questionView.findViewById(R.id.remaining_time)).setText(String.format(res.getString(R.string.question_remaining),millisUntilFinished/1000));
+                            }
+                            public void onFinish() {
+                                dialog.dismiss();
+                            }
+                        }.start();
+                    }else{
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogTheme);
+                        builder.setMessage("Sorry someone else solving the coupon's question!");
+                        builder.setTitle("Busy!");
+                        builder.setPositiveButton(R.string.ok,null);
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+
+
                 }
             };
             CouponButton.setOnClickListener(onClickListener);

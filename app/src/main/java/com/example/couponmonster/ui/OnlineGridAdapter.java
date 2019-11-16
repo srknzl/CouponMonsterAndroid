@@ -48,13 +48,13 @@ public class OnlineGridAdapter extends BaseAdapter {
         View gridView = inflater.inflate(R.layout.online_grid_adapter, null);
         OnlinePerson onlinePerson = getItem(position);
 
-        TextView PersonName = (TextView) gridView.findViewById(R.id.person_name);
-        TextView NickName = (TextView) gridView.findViewById(R.id.person_nickname);
-        TextView LastLogin = (TextView) gridView.findViewById(R.id.person_lastlogin);
+        TextView PersonName = gridView.findViewById(R.id.person_name);
+        TextView NickName = gridView.findViewById(R.id.person_nickname);
+        TextView LastLogin = gridView.findViewById(R.id.person_lastlogin);
         try {
-            PersonName.setText(onlinePerson.getName());
-            NickName.setText(onlinePerson.getNickName());
-            LastLogin.setText(onlinePerson.getLastLogin());
+            PersonName.setText("Name: " + onlinePerson.getName());
+            NickName.setText("Nickname: " + onlinePerson.getNickName());
+            LastLogin.setText("Last Login: " + onlinePerson.getLastLogin());
         } catch (Exception e) {
             e.printStackTrace();
         }

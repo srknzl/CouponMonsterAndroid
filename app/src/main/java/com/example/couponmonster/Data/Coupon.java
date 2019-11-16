@@ -9,12 +9,19 @@ public class Coupon {
     private int answer;
     private String reward;
 
-    public Coupon(String hash, Date creationDate, String problem, String reward, int answer){
+    public int getSolveTime() {
+        return solveTime;
+    }
+
+    private int solveTime;
+
+    public Coupon(String hash, Date creationDate, String problem, String reward, int answer,int solveTime){
         this.hash = hash;
         this.creationDate = creationDate;
         this.problem = problem;
         this.answer = answer;
         this.reward = reward;
+        this.solveTime = solveTime;
     }
     public Coupon(){
         this.hash = "";
@@ -22,6 +29,7 @@ public class Coupon {
         this.problem = "";
         this.reward = "";
         this.answer = 0;
+        this.solveTime = 0;
     }
 
     public String getProblem(){

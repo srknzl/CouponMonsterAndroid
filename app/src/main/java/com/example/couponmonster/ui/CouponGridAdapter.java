@@ -2,6 +2,9 @@ package com.example.couponmonster.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.Resources;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,11 +51,12 @@ public class CouponGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent)  {
         final LayoutInflater inflater = (LayoutInflater) this.context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View gridView = inflater.inflate(R.layout.coupon_grid_adapter, null);
-        Coupon SingleCoupon = getItem(position);
-        Button CouponButton = (Button) gridView.findViewById(R.id.coupon_button);
-        TextView CouponHash = (TextView) gridView.findViewById(R.id.coupon_hash);
-        TextView CouponNumber = (TextView) gridView.findViewById(R.id.coupon_number);
-        TextView CouponReward = (TextView) gridView.findViewById(R.id.coupon_reward);
+        final Coupon SingleCoupon = getItem(position);
+
+        Button CouponButton = gridView.findViewById(R.id.coupon_button);
+        TextView CouponHash = gridView.findViewById(R.id.coupon_hash);
+        TextView CouponNumber = gridView.findViewById(R.id.coupon_number);
+        TextView CouponReward = gridView.findViewById(R.id.coupon_reward);
 
         try {
             CouponHash.setText(SingleCoupon.getHash());
@@ -62,14 +66,21 @@ public class CouponGridAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                    View questionView = inflater.inflate(R.layout.question_dialog, null);
-
-                    TextView question = (TextView) questionView.findViewById(R.id.question);
-                    question.setText("2+2");
+                    final View questionView = inflater.inflate(R.layout.question_dialog, null);
+                    TextView question = questionView.findViewById(R.id.question);
+                    question.setText(SingleCoupon.getProblem());
                     builder.setView(questionView);
-                    AlertDialog dialog = builder.create();
+                    final AlertDialog dialog = builder.create();
                     dialog.show();
+                    new CountDownTimer(SingleCoupon.getSolveTime()*1000, 1000) {
+                        Resources res = context.getResources();
+                        public void onTick(long millisUntilFinished) {
+                            ((TextView)questionView.findViewById(R.id.remaining_time)).setText(String.format(res.getString(R.string.question_remaining),millisUntilFinished/1000));
+                        }
+                        public void onFinish() {
+                            dialog.dismiss();
+                        }
+                    }.start();
                 }
             };
             CouponButton.setOnClickListener(onClickListener);

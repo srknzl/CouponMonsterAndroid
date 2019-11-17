@@ -38,4 +38,8 @@
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
 
+
+    <string name="appbar_connected">Connected</string>
+    <string name="appbar_notconnected">Not connected</string>
+
 </resources>

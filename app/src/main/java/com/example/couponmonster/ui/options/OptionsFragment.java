@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.example.couponmonster.AppState;
 import com.example.couponmonster.MainActivity;
@@ -31,20 +30,11 @@ public class OptionsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_options, container, false);
 
         Button connectButton = root.findViewById(R.id.connect_button);
-        final EditText addressEditText = root.findViewById(R.id.address);
-        final EditText portEditText = root.findViewById(R.id.port);
 
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    ((MainActivity)getContext()).connect(addressEditText.getText().toString(),Integer.parseInt(portEditText.getText().toString()));
-                }catch (NumberFormatException e){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage("Please enter a valid port. You entered: " + portEditText.getText().toString());
-                    builder.setTitle("Not connected");
-                    builder.create().show();
-                }
+                ((MainActivity)getContext()).connect();
             }
         });
         return root;

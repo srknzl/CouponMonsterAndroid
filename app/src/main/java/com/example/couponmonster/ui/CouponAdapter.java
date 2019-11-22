@@ -4,65 +4,47 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.couponmonster.Data.Coupon;
+import com.example.couponmonster.Data.CouponViewHolder;
 import com.example.couponmonster.R;
 
 import java.util.Random;
 import java.util.Vector;
 
-public class CouponGridAdapter extends BaseAdapter {
+public class CouponAdapter extends RecyclerView.Adapter<CouponViewHolder> {
     private final android.content.Context context;
-    private final Vector<Coupon> coupons;
-
-    public CouponGridAdapter(Context context,Vector<Coupon> coupons) {
+    public Vector<Coupon> coupons;
+    public CouponAdapter(Context context, Vector<Coupon> coupons) {
         this.context = context;
         this.coupons = coupons;
     }
-
     @Override
-    public int getCount() {
-        return this.coupons.size();
+    public int getItemCount() {
+        return coupons.size();
     }
 
     @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public Coupon getItem(int position)  {
-        Coupon curCoupon = new Coupon();
-        try {
-            curCoupon = this.coupons.elementAt(position);
-        } catch( Exception e ){
-            e.printStackTrace();
-        }
-        return curCoupon;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent)  {
-        final LayoutInflater inflater = (LayoutInflater) this.context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        View gridView = inflater.inflate(R.layout.coupon_grid_adapter, null);
-        final Coupon SingleCoupon = getItem(position);
-
-        Button CouponButton = gridView.findViewById(R.id.coupon_button);
-        TextView CouponHash = gridView.findViewById(R.id.coupon_hash);
-        TextView CouponNumber = gridView.findViewById(R.id.coupon_number);
-        TextView CouponReward = gridView.findViewById(R.id.coupon_reward);
+    public void onBindViewHolder(@NonNull CouponViewHolder holder, int position) {
+        final Coupon SingleCoupon = coupons.get(position);
+        Button CouponButton = holder.itemView.findViewById(R.id.coupon_button);
+        TextView CouponHash = holder.itemView.findViewById(R.id.coupon_hash);
+        TextView CouponNumber = holder.itemView.findViewById(R.id.coupon_number);
+        TextView CouponReward = holder.itemView.findViewById(R.id.coupon_reward);
 
         try {
             CouponHash.setText(SingleCoupon.getHash());
             CouponNumber.setText(Integer.toString(position+1));
             CouponReward.setText(SingleCoupon.getReward());
+            final LayoutInflater inflater = (LayoutInflater) this.context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
             View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -92,14 +74,19 @@ public class CouponGridAdapter extends BaseAdapter {
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
                     }
-
-
                 }
             };
             CouponButton.setOnClickListener(onClickListener);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return gridView;
+    }
+
+    @NonNull
+    @Override
+    public CouponViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View couponView = inflater.inflate(R.layout.coupon_grid_adapter, parent,false);
+        return new CouponViewHolder(couponView);
     }
 }

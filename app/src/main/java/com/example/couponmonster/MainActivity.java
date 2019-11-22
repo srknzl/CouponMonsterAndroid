@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        connect();
     }
     @Override
     public void onDestroy() {
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public void connect(String address, int port){
+    public void connect(){
         AppState appState = AppState.getInstance();
 
         if(appState.listener != null)appState.listener.close();
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         appState.listener = null;
         ((TextView)this.findViewById(R.id.connectionStatus)).setText(R.string.appbar_notconnected);
 
-        Listener listener = new Listener(this,address,port);
+        Listener listener = new Listener(this);
         appState.listener = listener;
         Thread listenerThread = new Thread(listener);
         appState.listenerThread = listenerThread;

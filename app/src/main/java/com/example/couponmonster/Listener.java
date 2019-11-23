@@ -6,14 +6,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 import com.example.couponmonster.Data.Coupon;
 import com.example.couponmonster.ui.CouponAdapter;
 import com.example.couponmonster.ui.home.HomeFragment;
-import com.example.couponmonster.ui.home.HomeViewModel;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,19 +22,22 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Vector;
 
-class Listener implements Runnable {
-    static Activity context;
-    static Socket socket;
-    static Scanner in;
-    static PrintWriter out;
+public class Listener implements Runnable {
+    public static Activity context;
+    public Socket socket;
+    public Scanner in;
+    public PrintWriter out;
+    public LinkedList<String> messageQueue;
 
     public Listener(Context context) {
         Listener.context = (Activity) context;
-        Listener.socket = new Socket();
+        this.socket = new Socket();
+        this.messageQueue = new LinkedList<String>();
     }
     public void close(){
         try{
@@ -65,12 +68,18 @@ class Listener implements Runnable {
                     return;
                 }
                 try{
-                    String read = in.nextLine();
-                    processMessages(read);
+                    if(socket.getInputStream().available()>0){
+                        String read = in.nextLine();
+                        processMessages(read);
+                    }
+
                 }catch (NoSuchElementException e){
+                    Log.e("No such el","sdasd");
                     e.printStackTrace();
                     appState.connected = false;
                     appState.coupons.clear();
+                    appState.listener = null;
+                    appState.listenerThread = null;
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -94,12 +103,16 @@ class Listener implements Runnable {
                     });
                     return;
                 }
-
-                while(in.hasNextLine()){
-                    processMessages(in.nextLine());
+                if( messageQueue.size() > 0){
+                    Log.e("Sending","");
+                    out.println(messageQueue.removeFirst());
+                }
+                try{
+                    Thread.sleep(100);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
                 }
             }
-
 
         }catch (IOException e){
             appState.connected = false;
@@ -127,7 +140,12 @@ class Listener implements Runnable {
                 return;
             }
             AppState.getInstance().coupons.add(new Coupon(hash,new Date(),problem,reward,answer,solveTime));
-            HomeFragment.recyclerView.getAdapter().notifyItemInserted(AppState.getInstance().coupons.size()-1);
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    HomeFragment.recyclerView.getAdapter().notifyItemInserted(AppState.getInstance().coupons.size()-1);
+                }
+            });
         }else if(message.charAt(0)=='2') {
             final Vector<Coupon> initialCoupons = new Vector<>();
             message = message.substring(1);
@@ -162,6 +180,21 @@ class Listener implements Runnable {
                 }
             });
 
+        }else if(message.charAt(0)=='3'){
+            String[] tokens = message.substring(1).split("\\|");
+            if(tokens[0].equals("Success")){
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                    }
+                });
+                AppState.getInstance().removeCoupon(tokens[1]);
+            }
         }
+    }
+    public void addMessage(String message){
+        Log.e("Message offer: ",Boolean.toString(messageQueue.offer(message)));
+        Log.e("messages: ", messageQueue.toString());
     }
 }

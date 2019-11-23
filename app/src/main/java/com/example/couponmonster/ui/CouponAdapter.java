@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.couponmonster.AppState;
 import com.example.couponmonster.Data.Coupon;
 import com.example.couponmonster.Data.CouponViewHolder;
 import com.example.couponmonster.R;
@@ -66,6 +69,20 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponViewHolder> {
                                 dialog.dismiss();
                             }
                         }.start();
+                        Button qb = questionView.findViewById(R.id.question_button);
+                        qb.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(AppState.getInstance().listener != null && AppState.getInstance().listener.out != null){
+                                    EditText answerView = questionView.findViewById(R.id.answer);
+                                    AppState.getInstance().listener.addMessage("3" +  SingleCoupon.getHash()  + "|" + answerView.getText().toString());
+                                    Toast.makeText(context, "Submitted...", Toast.LENGTH_LONG).show();
+                                    dialog.dismiss();
+                                }else{
+                                    Toast.makeText(context, "You cannot submit because you are not connected anymore.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                     }else{
                         AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogTheme);
                         builder.setMessage("Sorry someone else solving the coupon's question!");

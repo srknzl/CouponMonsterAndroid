@@ -10,7 +10,7 @@ public class AppState {
     public boolean connected;
     public Vector<Coupon> coupons;
     public Vector<OnlinePerson> onlinePeople;
-    Listener listener;
+    public Listener listener;
     Thread listenerThread;
     public static AppState getInstance() {
         return ourInstance;
@@ -20,5 +20,12 @@ public class AppState {
         connected = false;
         coupons = new Vector<>();
         onlinePeople = new Vector<>();
+    }
+    public void removeCoupon(String hash){
+        for (int i =0;i<coupons.size();i++){
+            if(coupons.elementAt(i).getHash().equals(hash)){
+                coupons.removeElementAt(i);
+            }
+        }
     }
 }

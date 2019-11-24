@@ -2,7 +2,6 @@ package com.example.couponmonster.ui.options;
 
 import androidx.lifecycle.ViewModelProviders;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,12 +13,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.couponmonster.AppState;
 import com.example.couponmonster.MainActivity;
 import com.example.couponmonster.R;
-import com.example.couponmonster.UsernameChangeThread;
 
 public class OptionsFragment extends Fragment {
 
@@ -37,27 +34,16 @@ public class OptionsFragment extends Fragment {
 
         final EditText nameEditText = root.findViewById(R.id.name);
         final EditText usernameEditText = root.findViewById(R.id.username);
-
-
-        AppState.getInstance().listener.addMessage("6");
+        TextView scoreText = root.findViewById(R.id.score);
+        if(appState.user != null){
+            nameEditText.setText(appState.user.name);
+            usernameEditText.setText(appState.user.username);
+            scoreText.setText("Score: " + appState.user.score);
+        }
         changeUserdataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UsernameChangeThread t = new UsernameChangeThread(nameEditText.getText().toString(),usernameEditText.getText().toString());
-                Thread runner = new Thread(t);
-                runner.start();
-                try {
-                    runner.join();
-                    if(t.result){
-                        Toast.makeText(getContext(),"Username changed", Toast.LENGTH_LONG).show();
-                        nameEditText.setText(t.name);
-                        usernameEditText.setText(t.username);
-                    }else{
-                        Toast.makeText(getContext(),"Username taken", Toast.LENGTH_LONG).show();
-                    }
-                }catch (InterruptedException e){
-                    Toast.makeText(getContext(),"Cannot change", Toast.LENGTH_LONG).show();
-                }
+                AppState.getInstance().listener.addMessage("8" + nameEditText.getText().toString() + "|" + usernameEditText.getText().toString());
             }
         });
         connectButton.setOnClickListener(new View.OnClickListener() {

@@ -33,6 +33,7 @@ public class OnlineGridAdapter extends BaseAdapter {
 
     @Override
     public OnlinePerson getItem(int position)  {
+
         OnlinePerson onlinePerson = new OnlinePerson();
         try {
             onlinePerson = this.onlinePeople.elementAt(position);

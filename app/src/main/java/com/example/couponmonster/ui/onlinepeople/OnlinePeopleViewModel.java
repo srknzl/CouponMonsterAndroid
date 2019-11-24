@@ -11,7 +11,7 @@ import java.util.Vector;
 public class OnlinePeopleViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
-    public MutableLiveData<Vector<OnlinePerson>> onlinePeople;
+    public static MutableLiveData<Vector<OnlinePerson>> onlinePeople;
 
     public OnlinePeopleViewModel() {
         mText = new MutableLiveData<>();

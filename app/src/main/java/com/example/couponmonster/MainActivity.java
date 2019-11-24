@@ -2,6 +2,7 @@ package com.example.couponmonster;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -14,11 +15,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -29,6 +31,35 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        TextView connectionStatus = findViewById(R.id.connectionStatus);
+        if(AppState.getInstance().connected)connectionStatus.setText("Connected");
+        else connectionStatus.setText("Not connected");
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+                TextView nameView = drawerView.findViewById(R.id.nav_name);
+                TextView usernameView = drawerView.findViewById(R.id.nav_username);
+                TextView scoreView = drawerView.findViewById(R.id.nav_score);
+                nameView.setText("Name: " + AppState.getInstance().user.name);
+                usernameView.setText("Username: " + AppState.getInstance().user.username);
+                scoreView.setText("Score: " + AppState.getInstance().user.score);
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -41,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        connect();
+        if(!AppState.getInstance().connected)connect();
     }
     @Override
     public void onDestroy() {
@@ -74,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         Listener listener = new Listener(this);
         appState.listener = listener;
+        Log.e("Not null",listener.toString());
         Thread listenerThread = new Thread(listener);
         appState.listenerThread = listenerThread;
         listenerThread.start();

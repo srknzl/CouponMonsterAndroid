@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.couponmonster.AppState;
 import com.example.couponmonster.Data.OnlinePerson;
 import com.example.couponmonster.R;
 import com.example.couponmonster.ui.OnlineGridAdapter;
@@ -28,11 +29,13 @@ public class OnlinePeopleFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        onlinePeople = AppState.getInstance().onlinePeople;
         onlinePeopleViewModel =
                 ViewModelProviders.of(this).get(OnlinePeopleViewModel.class);
         View root = inflater.inflate(R.layout.fragment_online, container, false);
         final TextView textView = root.findViewById(R.id.text_online);
         gridView = root.findViewById(R.id.online_people);
+        createGridView(onlinePeople);
         onlinePeopleViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -42,8 +45,8 @@ public class OnlinePeopleFragment extends Fragment {
         onlinePeopleViewModel.getOnlinePeople().observe(this,new Observer<Vector<OnlinePerson>>(){
             @Override
             public void onChanged(Vector<OnlinePerson> onlinePersonVector) {
-                onlinePeople = onlinePersonVector;
-                createGridView(onlinePeople);
+                OnlineGridAdapter adapter = ((OnlineGridAdapter)gridView.getAdapter());
+                adapter.notifyDataSetChanged();
             }
         });
 

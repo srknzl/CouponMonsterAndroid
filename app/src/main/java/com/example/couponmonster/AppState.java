@@ -22,6 +22,7 @@ public class AppState {
         connected = false;
         coupons = new Vector<>();
         onlinePeople = new Vector<>();
+        user = new OnlinePerson();
     }
     public int removeCoupon(String hash){
         for (int i =0;i<coupons.size();i++){

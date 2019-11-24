@@ -1,30 +1,18 @@
 package com.example.couponmonster.Data;
 
 public class OnlinePerson {
-    private String name;
-    private String nickname;
-    private String lastLogin;
+    public String name;
+    public String username;
+    public int score;
 
-    public OnlinePerson(String name, String nickname, String lastLogin){
+    public OnlinePerson(String name, String username, int score){
         this.name = name;
-        this.nickname = nickname;
-        this.lastLogin = lastLogin;
+        this.username = username;
+        this.score = score;
     }
     public OnlinePerson(){
         this.name = "";
-        this.nickname = "";
-        this.lastLogin = "";
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getNickName() {
-        return nickname;
-    }
-
-    public String getLastLogin() {
-        return lastLogin;
+        this.username = "";
+        this.score = 0;
     }
 }

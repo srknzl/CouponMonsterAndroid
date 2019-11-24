@@ -50,11 +50,11 @@ public class OnlineGridAdapter extends BaseAdapter {
 
         TextView PersonName = gridView.findViewById(R.id.person_name);
         TextView NickName = gridView.findViewById(R.id.person_nickname);
-        TextView LastLogin = gridView.findViewById(R.id.person_lastlogin);
+        TextView Score = gridView.findViewById(R.id.score);
         try {
-            PersonName.setText("Name: " + onlinePerson.getName());
-            NickName.setText("Nickname: " + onlinePerson.getNickName());
-            LastLogin.setText("Last Login: " + onlinePerson.getLastLogin());
+            PersonName.setText("Name: " + onlinePerson.name);
+            NickName.setText("Username: " + onlinePerson.username);
+            Score.setText("Score: " + onlinePerson.score);
         } catch (Exception e) {
             e.printStackTrace();
         }

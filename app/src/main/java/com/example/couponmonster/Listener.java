@@ -7,14 +7,15 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.example.couponmonster.Data.Coupon;
-import com.example.couponmonster.Data.StringInt;
 import com.example.couponmonster.ui.CouponAdapter;
 import com.example.couponmonster.ui.home.HomeFragment;
+import com.example.couponmonster.ui.options.OptionsFragment;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -135,6 +136,10 @@ public class Listener implements Runnable {
          3 Send: Answer -> Get: True/False
          4 Send: Selection -> Get:True/False
          5 Send: Dismiss
+         6 Get: User data
+         7 Get: All users
+         8 Send: New name and username Get: Yes/No
+         9 Get: Pulse Send: Pulse
      */
     public void processMessages(String message){
         Log.e("Listener: ", message);
@@ -201,13 +206,16 @@ public class Listener implements Runnable {
             });
         }else if(message.charAt(0)=='2'){
             String[] tokens = message.substring(1).split("\\|");
-            final StringInt ret = AppState.getInstance().removeCoupon(tokens[0]);
-            if(ret.integer >= 0){
+            String name = tokens[1];
+            final String username = tokens[2];
+            final String difficulty = tokens[3];
+            final int ret = AppState.getInstance().removeCoupon(tokens[0]);
+            if(ret >= 0){
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        HomeFragment.recyclerView.getAdapter().notifyItemRemoved(ret.integer);
-                        Toast.makeText(context,"" + ret.integer,Toast.LENGTH_LONG).show();
+                        HomeFragment.recyclerView.getAdapter().notifyItemRemoved(ret);
+                        Toast.makeText(context,username+" has won a coupon with " + difficulty + " difficulty!",Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -228,6 +236,29 @@ public class Listener implements Runnable {
                     }
                 });
             }
+        }else if(message.charAt(0)=='6'){
+            String[] tokens = message.substring(1).split("\\|");
+            final String name = tokens[0];
+            final String username = tokens[1];
+            final String score = tokens[2];
+
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TextView scoreTextView = context.findViewById(R.id.score);
+                    EditText nameEditText = context.findViewById(R.id.name);
+                    EditText usernameEditText = context.findViewById(R.id.username);
+
+                    scoreTextView.setText(score);
+                    nameEditText.setText(name);
+                    usernameEditText.setText(username);
+                    AppState.getInstance().user.name = name;
+                    AppState.getInstance().user.username = username;
+                    AppState.getInstance().user.score = Integer.parseInt(score);
+                }
+            });
+        }else if(message.charAt(0)=='7'){
+
         }
     }
     public void addMessage(String message){

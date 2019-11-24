@@ -11,10 +11,15 @@
         app:alignContent="stretch"
         app:alignItems="center"
         app:flexWrap="wrap"
+        app:flexDirection="column"
         app:justifyContent="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0" />
         <include
             layout="@layout/server_connect_options"
             tools:layout_editor_absoluteX="55dp"
@@ -26,6 +31,7 @@
             tools:layout_editor_absoluteY="331dp" />
 
     </com.google.android.flexbox.FlexboxLayout>
+
 
 
 

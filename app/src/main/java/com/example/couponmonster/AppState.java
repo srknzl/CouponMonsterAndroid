@@ -2,7 +2,6 @@ package com.example.couponmonster;
 
 
 import com.example.couponmonster.Data.Coupon;
-import com.example.couponmonster.Data.CouponWinResult;
 import com.example.couponmonster.Data.OnlinePerson;
 
 import java.util.Vector;
@@ -14,6 +13,7 @@ public class AppState {
     public Vector<OnlinePerson> onlinePeople;
     public Listener listener;
     Thread listenerThread;
+    public OnlinePerson user;
     public static AppState getInstance() {
         return ourInstance;
     }
@@ -23,14 +23,14 @@ public class AppState {
         coupons = new Vector<>();
         onlinePeople = new Vector<>();
     }
-    public CouponWinResult removeCoupon(String hash){
+    public int removeCoupon(String hash){
         for (int i =0;i<coupons.size();i++){
             Coupon c = coupons.elementAt(i);
             if(c.getHash().equals(hash)){
                 coupons.removeElementAt(i);
-                return new CouponWinResult(c.getReward(),"",i);
+                return i;
             }
         }
-        return new CouponWinResult("","",-1);
+        return -1;
     }
 }

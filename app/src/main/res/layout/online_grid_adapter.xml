@@ -36,18 +36,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:padding="5dp"
-                android:text="Nickname: srknzl"
+                android:text="Username: srknzl"
                 android:textAlignment="center"
                 android:textColor="#037c05"
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/person_lastlogin"
+                android:id="@+id/person_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:padding="5dp"
-                android:text="Last Login: 10.11.2019"
+                android:text="Score: 0"
                 android:textAlignment="center"
                 android:textSize="18sp" />
         </LinearLayout>

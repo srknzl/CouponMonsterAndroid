@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.couponmonster.Data.OnlinePerson;
 import com.example.couponmonster.R;
 
+import java.util.Collections;
 import java.util.Vector;
 
 public class OnlineGridAdapter extends BaseAdapter {
@@ -33,9 +34,9 @@ public class OnlineGridAdapter extends BaseAdapter {
 
     @Override
     public OnlinePerson getItem(int position)  {
-
         OnlinePerson onlinePerson = new OnlinePerson();
         try {
+            Collections.sort(onlinePeople);
             onlinePerson = this.onlinePeople.elementAt(position);
         } catch( Exception e ){
             e.printStackTrace();
@@ -52,10 +53,12 @@ public class OnlineGridAdapter extends BaseAdapter {
         TextView PersonName = gridView.findViewById(R.id.person_name);
         TextView NickName = gridView.findViewById(R.id.person_nickname);
         TextView Score = gridView.findViewById(R.id.score);
+        TextView Rank = gridView.findViewById(R.id.rank);
         try {
             PersonName.setText("Name: " + onlinePerson.name);
             NickName.setText("Username: " + onlinePerson.username);
             Score.setText("Score: " + onlinePerson.score);
+            Rank.setText("Rank: " + position);
         } catch (Exception e) {
             e.printStackTrace();
         }

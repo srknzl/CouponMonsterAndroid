@@ -1,6 +1,6 @@
 package com.example.couponmonster.Data;
 
-public class OnlinePerson {
+public class OnlinePerson implements Comparable<OnlinePerson>{
     public String name;
     public String username;
     public int score;
@@ -14,5 +14,10 @@ public class OnlinePerson {
         this.name = "";
         this.username = "";
         this.score = 0;
+    }
+
+    @Override
+    public int compareTo(OnlinePerson o) {
+        return Integer.compare(this.score, o.score);
     }
 }

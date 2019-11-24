@@ -54,20 +54,6 @@ public class HomeFragment extends Fragment {
         flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
         flexboxLayoutManager.setJustifyContent(JustifyContent.SPACE_EVENLY);
         recyclerView.setLayoutManager(flexboxLayoutManager);
-        /*Button b = this.getView().findViewById(R.id.add_button);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppState.getInstance().coupons.add(new Coupon("hash",new Date(),"asdasd","sadsd",1,2));
-                recyclerView.getAdapter().notifyItemInserted(recyclerView.getAdapter().getItemCount()-1);
-                *//*AppState.getInstance().coupons.add(new Coupon("hash",new Date(),"asdasd","sadsd",1,2));
-                AppState.getInstance().coupons.add(new Coupon("hash",new Date(),"asdasd","sadsd",1,2));
-                AppState.getInstance().coupons.add(new Coupon("hash",new Date(),"asdasd","sadsd",1,2));
-                AppState.getInstance().coupons.add(new Coupon("hash",new Date(),"asdasd","sadsd",1,2));
-                AppState.getInstance().coupons.add(new Coupon("hash",new Date(),"asdasd","sadsd",1,2));
-                recyclerView.getAdapter().notifyDataSetChanged();*//*
-            }
-        });*/
     }
 
 }

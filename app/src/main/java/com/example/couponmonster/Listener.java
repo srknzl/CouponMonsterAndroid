@@ -19,8 +19,9 @@ import android.widget.Toast;
 import com.example.couponmonster.Data.Coupon;
 import com.example.couponmonster.Data.OnlinePerson;
 import com.example.couponmonster.ui.CouponAdapter;
+import com.example.couponmonster.ui.OnlineGridAdapter;
 import com.example.couponmonster.ui.home.HomeFragment;
-import com.example.couponmonster.ui.onlinepeople.OnlinePeopleViewModel;
+import com.example.couponmonster.ui.onlinepeople.OnlinePeopleFragment;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,7 +29,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Vector;
@@ -342,7 +342,8 @@ public class Listener implements Runnable {
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    OnlinePeopleViewModel.onlinePeople.setValue(onlinePeople);
+                    AppState.getInstance().onlinePeople = onlinePeople;
+                    ((OnlineGridAdapter)OnlinePeopleFragment.gridView.getAdapter()).notifyDataSetChanged();
                 }
             });
         }else if(message.charAt(0)=='8'){

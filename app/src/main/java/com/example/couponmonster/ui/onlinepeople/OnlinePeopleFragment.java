@@ -23,33 +23,23 @@ import java.util.Vector;
 public class OnlinePeopleFragment extends Fragment {
 
     private OnlinePeopleViewModel onlinePeopleViewModel;
-    private GridView gridView;
-    private Vector<OnlinePerson> onlinePeople;
+    public static GridView gridView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        onlinePeople = AppState.getInstance().onlinePeople;
         onlinePeopleViewModel =
                 ViewModelProviders.of(this).get(OnlinePeopleViewModel.class);
         View root = inflater.inflate(R.layout.fragment_online, container, false);
         final TextView textView = root.findViewById(R.id.text_online);
         gridView = root.findViewById(R.id.online_people);
-        createGridView(onlinePeople);
+        createGridView(AppState.getInstance().onlinePeople);
         onlinePeopleViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
             }
         });
-        onlinePeopleViewModel.getOnlinePeople().observe(this,new Observer<Vector<OnlinePerson>>(){
-            @Override
-            public void onChanged(Vector<OnlinePerson> onlinePersonVector) {
-                OnlineGridAdapter adapter = ((OnlineGridAdapter)gridView.getAdapter());
-                adapter.notifyDataSetChanged();
-            }
-        });
-
         return root;
     }
     private void createGridView(Vector<OnlinePerson> onlinePeopleVec){

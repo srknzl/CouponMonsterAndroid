@@ -2,6 +2,7 @@ package com.example.couponmonster.ui;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.example.couponmonster.AppState;
 import com.example.couponmonster.Data.Coupon;
 import com.example.couponmonster.Data.CouponViewHolder;
 import com.example.couponmonster.R;
+import com.example.couponmonster.SelectionThread;
 
 import java.util.Random;
 import java.util.Vector;
@@ -51,46 +53,60 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponViewHolder> {
             View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    if(new Random().nextInt(10) < 5){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        final View questionView = inflater.inflate(R.layout.question_dialog, null);
-                        TextView question = questionView.findViewById(R.id.question);
-                        question.setText(SingleCoupon.getProblem());
-                        builder.setView(questionView);
-                        final AlertDialog dialog = builder.create();
-                        dialog.show();
-                        new CountDownTimer(SingleCoupon.getSolveTime()*1000, 1000) {
-                            Resources res = context.getResources();
-                            public void onTick(long millisUntilFinished) {
-                                ((TextView)questionView.findViewById(R.id.remaining_time)).setText(String.format(res.getString(R.string.question_remaining),millisUntilFinished/1000));
-                            }
-                            public void onFinish() {
-                                dialog.dismiss();
-                            }
-                        }.start();
-                        Button qb = questionView.findViewById(R.id.question_button);
-                        qb.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if(AppState.getInstance().listener != null && AppState.getInstance().listener.out != null){
-                                    EditText answerView = questionView.findViewById(R.id.answer);
-                                    AppState.getInstance().listener.addMessage("3" +  SingleCoupon.getHash()  + "|" + answerView.getText().toString());
-                                    Toast.makeText(context, "Submitted...", Toast.LENGTH_LONG).show();
-                                    dialog.dismiss();
-                                }else{
-                                    Toast.makeText(context, "You cannot submit because you are not connected anymore.", Toast.LENGTH_LONG).show();
+                    SelectionThread s = new SelectionThread(SingleCoupon.getHash());
+                    Thread st = new Thread(s);
+                    st.start();
+                    try {
+                        st.join();
+                        if(s.result){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            final View questionView = inflater.inflate(R.layout.question_dialog, null);
+                            TextView question = questionView.findViewById(R.id.question);
+                            question.setText(SingleCoupon.getProblem());
+                            builder.setView(questionView);
+                            final AlertDialog dialog = builder.create();
+                            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialog) {
+                                    AppState.getInstance().listener.addMessage("5" +  SingleCoupon.getHash());
                                 }
-                            }
-                        });
-                    }else{
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogTheme);
-                        builder.setMessage("Sorry someone else solving the coupon's question!");
-                        builder.setTitle("Busy!");
-                        builder.setPositiveButton(R.string.ok,null);
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
+                            });
+                            dialog.show();
+                            new CountDownTimer(SingleCoupon.getSolveTime()*1000, 1000) {
+                                Resources res = context.getResources();
+                                public void onTick(long millisUntilFinished) {
+                                    ((TextView)questionView.findViewById(R.id.remaining_time)).setText(String.format(res.getString(R.string.question_remaining),millisUntilFinished/1000));
+                                }
+                                public void onFinish() {
+                                    dialog.dismiss();
+                                }
+                            }.start();
+                            Button qb = questionView.findViewById(R.id.question_button);
+                            qb.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if(AppState.getInstance().listener != null && AppState.getInstance().listener.out != null){
+                                        EditText answerView = questionView.findViewById(R.id.answer);
+                                        AppState.getInstance().listener.addMessage("3" +  SingleCoupon.getHash()  + "|" + answerView.getText().toString());
+                                        Toast.makeText(context, "Submitted...", Toast.LENGTH_LONG).show();
+                                        dialog.dismiss();
+                                    }else{
+                                        Toast.makeText(context, "You cannot submit because you are not connected anymore.", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        }else{
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogTheme);
+                            builder.setMessage("Sorry someone else solving the coupon's question!");
+                            builder.setTitle("Busy!");
+                            builder.setPositiveButton(R.string.ok,null);
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        }
+                    }catch (InterruptedException e){
+                        Thread.currentThread().interrupt();
                     }
+
                 }
             };
             CouponButton.setOnClickListener(onClickListener);

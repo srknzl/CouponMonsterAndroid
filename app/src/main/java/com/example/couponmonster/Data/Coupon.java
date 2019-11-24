@@ -8,6 +8,7 @@ public class Coupon {
     private String problem;
     private int answer;
     private String reward;
+    public boolean canOpen = false;
 
     public int getSolveTime() {
         return solveTime;

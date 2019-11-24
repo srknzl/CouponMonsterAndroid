@@ -23,7 +23,6 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -37,7 +36,7 @@ public class Listener implements Runnable {
     public Listener(Context context) {
         Listener.context = (Activity) context;
         this.socket = new Socket();
-        this.messageQueue = new LinkedList<String>();
+        this.messageQueue = new LinkedList<>();
     }
     public void close(){
         try{
@@ -50,13 +49,13 @@ public class Listener implements Runnable {
     public void run(){
         AppState appState = AppState.getInstance();
         try {
-            InetAddress inetAddress = InetAddress.getByName("104.248.31.36");
-            SocketAddress socketAddress = new InetSocketAddress(inetAddress,22000);
+            InetAddress inetAddress = InetAddress.getByName("104.248.43.186");
+            SocketAddress socketAddress = new InetSocketAddress(inetAddress,6000);
             socket.connect(socketAddress);
             appState.connected = true;
             in = new Scanner(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream(),true);
-            out.println("Hello");
+            out.println("0");
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -64,18 +63,9 @@ public class Listener implements Runnable {
                 }
             });
             while(true){
-                if(Thread.interrupted()){
-                    return;
-                }
-                try{
-                    if(socket.getInputStream().available()>0){
-                        String read = in.nextLine();
-                        processMessages(read);
-                    }
+                out.println("9");
 
-                }catch (NoSuchElementException e){
-                    Log.e("No such el","sdasd");
-                    e.printStackTrace();
+                if(out.checkError() || Thread.interrupted()){
                     appState.connected = false;
                     appState.coupons.clear();
                     appState.listener = null;
@@ -101,8 +91,20 @@ public class Listener implements Runnable {
                             b.setTextColor(Color.BLUE);
                         }
                     });
+                    try{
+                        socket.close();
+                    }catch (IOException ee){
+                        ee.printStackTrace();
+                    };
                     return;
                 }
+
+                if(socket.getInputStream().available()>0 && in.hasNextLine()){
+                    String read = in.nextLine();
+                    Log.e("READ:",read);
+                    processMessages(read);
+                }
+
                 if( messageQueue.size() > 0){
                     Log.e("Sending","");
                     out.println(messageQueue.removeFirst());
@@ -115,38 +117,27 @@ public class Listener implements Runnable {
             }
 
         }catch (IOException e){
-            appState.connected = false;
-        }
-    }
-    public void processMessages(String message){
-        Log.e("Listener: ", message);
-        if(message.charAt(0)=='1'){
-            message = message.substring(1);
-            String[] fields = message.split("\\|");
-            if(fields.length != 5)return;
-            final String hash = fields[0];
-            final String problem = fields[1];
-            final int answer;
-            try {
-                answer = Integer.parseInt(fields[2]);
-            }catch (NumberFormatException e) {
-                return;
-            }
-            final String reward = fields[3];
-            final int solveTime;
-            try {
-                solveTime = Integer.parseInt(fields[4]);
-            }catch (NumberFormatException e) {
-                return;
-            }
-            AppState.getInstance().coupons.add(new Coupon(hash,new Date(),problem,reward,answer,solveTime));
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    HomeFragment.recyclerView.getAdapter().notifyItemInserted(AppState.getInstance().coupons.size()-1);
+                    Toast.makeText(context,"Could not connect, server may be down.",Toast.LENGTH_LONG).show();
                 }
             });
-        }else if(message.charAt(0)=='2') {
+            appState.connected = false;
+        }
+    }
+
+    /*
+         0 Send: Hello -> Get: Welcome + initial coupons
+         1 Get: New Coupon
+         2 Get: Clear coupon
+         3 Send: Answer -> Get: True/False
+         4 Send: Selection -> Get:True/False
+         5 Send: Dismiss
+     */
+    public void processMessages(String message){
+        Log.e("Listener: ", message);
+        if(message.charAt(0)=='0') {
             final Vector<Coupon> initialCoupons = new Vector<>();
             message = message.substring(1);
             String[] coupons = message.split("[;]");
@@ -180,21 +171,65 @@ public class Listener implements Runnable {
                 }
             });
 
+        }
+        else if(message.charAt(0)=='1'){
+            message = message.substring(1);
+            String[] fields = message.split("\\|");
+            if(fields.length != 5)return;
+            final String hash = fields[0];
+            final String problem = fields[1];
+            final int answer;
+            try {
+                answer = Integer.parseInt(fields[2]);
+            }catch (NumberFormatException e) {
+                return;
+            }
+            final String reward = fields[3];
+            final int solveTime;
+            try {
+                solveTime = Integer.parseInt(fields[4]);
+            }catch (NumberFormatException e) {
+                return;
+            }
+            AppState.getInstance().coupons.add(new Coupon(hash,new Date(),problem,reward,answer,solveTime));
+            context.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    HomeFragment.recyclerView.getAdapter().notifyItemInserted(AppState.getInstance().coupons.size()-1);
+                }
+            });
+        }else if(message.charAt(0)=='2'){
+            String[] tokens = message.substring(1).split("\\|");
+            final int pos = AppState.getInstance().removeCoupon(tokens[0]);
+            if(pos >= 0){
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HomeFragment.recyclerView.getAdapter().notifyItemRemoved(pos);
+                        Toast.makeText(context,"Someone got the token at position " + pos,Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }else if(message.charAt(0)=='3'){
             String[] tokens = message.substring(1).split("\\|");
-            if(tokens[0].equals("Success")){
+            if(tokens[0].equals("Yes")){
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
                     }
                 });
-                AppState.getInstance().removeCoupon(tokens[1]);
+            }else{
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Not correct answer!", Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         }
     }
     public void addMessage(String message){
-        Log.e("Message offer: ",Boolean.toString(messageQueue.offer(message)));
-        Log.e("messages: ", messageQueue.toString());
+        messageQueue.offer(message);
     }
 }

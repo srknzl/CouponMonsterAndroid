@@ -1,8 +1,8 @@
 package com.example.couponmonster;
 
-import android.util.Log;
 
 import com.example.couponmonster.Data.Coupon;
+import com.example.couponmonster.Data.CouponWinResult;
 import com.example.couponmonster.Data.OnlinePerson;
 
 import java.util.Vector;
@@ -23,13 +23,14 @@ public class AppState {
         coupons = new Vector<>();
         onlinePeople = new Vector<>();
     }
-    public int removeCoupon(String hash){
+    public CouponWinResult removeCoupon(String hash){
         for (int i =0;i<coupons.size();i++){
-            if(coupons.elementAt(i).getHash().equals(hash)){
+            Coupon c = coupons.elementAt(i);
+            if(c.getHash().equals(hash)){
                 coupons.removeElementAt(i);
-                return i;
+                return new CouponWinResult(c.getReward(),"",i);
             }
         }
-        return -1;
+        return new CouponWinResult("","",-1);
     }
 }

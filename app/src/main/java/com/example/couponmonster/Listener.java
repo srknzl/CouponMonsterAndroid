@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 
 import com.example.couponmonster.Data.Coupon;
+import com.example.couponmonster.Data.StringInt;
 import com.example.couponmonster.ui.CouponAdapter;
 import com.example.couponmonster.ui.home.HomeFragment;
 
@@ -200,13 +201,13 @@ public class Listener implements Runnable {
             });
         }else if(message.charAt(0)=='2'){
             String[] tokens = message.substring(1).split("\\|");
-            final int pos = AppState.getInstance().removeCoupon(tokens[0]);
-            if(pos >= 0){
+            final StringInt ret = AppState.getInstance().removeCoupon(tokens[0]);
+            if(ret.integer >= 0){
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        HomeFragment.recyclerView.getAdapter().notifyItemRemoved(pos);
-                        Toast.makeText(context,"Someone got the token at position " + pos,Toast.LENGTH_LONG).show();
+                        HomeFragment.recyclerView.getAdapter().notifyItemRemoved(ret.integer);
+                        Toast.makeText(context,"" + ret.integer,Toast.LENGTH_LONG).show();
                     }
                 });
             }

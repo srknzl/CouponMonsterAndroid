@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ public class OnlinePeopleFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         AppState.getInstance().listener.addMessage("7");
+        Toast.makeText(getContext(),"Refreshing...",Toast.LENGTH_LONG).show();
         return inflater.inflate(R.layout.fragment_online, container, false);
     }
     @Override

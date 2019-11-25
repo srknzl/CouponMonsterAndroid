@@ -54,6 +54,7 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponViewHolder> {
                 @Override
                 public void onClick(View v) {
                     if(inflater != null){
+                        Toast.makeText(context,"Selecting..",Toast.LENGTH_LONG).show();
                         SelectionThread s = new SelectionThread(SingleCoupon.getHash());
                         Thread st = new Thread(s);
                         st.start();

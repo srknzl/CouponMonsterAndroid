@@ -377,6 +377,7 @@ public class Listener implements Runnable {
                     if(onlinePeople != null){
                         ((OnlineGridAdapter)onlinePeople.getAdapter()).notifyDataSetChanged();
                         onlinePeople.invalidateViews();
+                        Toast.makeText(context,"Done...",Toast.LENGTH_LONG).show();
                     }
                 }
             });

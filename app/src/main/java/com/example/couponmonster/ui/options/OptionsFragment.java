@@ -41,7 +41,7 @@ public class OptionsFragment extends Fragment {
         changeUserdataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UsernameChangeThread t = new UsernameChangeThread(nameEditText.getText().toString(),usernameEditText.getText().toString());	                AppState.getInstance().listener.addMessage("8" + nameEditText.getText().toString() + "|" + usernameEditText.getText().toString());
+                UsernameChangeThread t = new UsernameChangeThread(nameEditText.getText().toString(),usernameEditText.getText().toString());
                 Thread runner = new Thread(t);
                 runner.start();
                 try {

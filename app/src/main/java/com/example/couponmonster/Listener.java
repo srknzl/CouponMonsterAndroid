@@ -154,7 +154,7 @@ public class Listener implements Runnable {
             String[] coupons = message.split("[;]");
             for (String coupon : coupons) {
                 String[] fields = coupon.split("\\|");
-                if (fields.length != 5) continue;
+                if (fields.length != 4) continue;
                 final String hash = fields[0];
                 final String problem = fields[1];
                 final String reward = fields[2];
@@ -180,7 +180,7 @@ public class Listener implements Runnable {
         else if(message.charAt(0)=='1'){
             message = message.substring(1);
             String[] fields = message.split("\\|");
-            if(fields.length != 5)return;
+            if(fields.length != 4)return;
             final String hash = fields[0];
             final String problem = fields[1];
             final String reward = fields[2];

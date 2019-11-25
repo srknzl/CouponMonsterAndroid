@@ -71,7 +71,7 @@ public class Listener implements Runnable {
                 }
             });
             while(true){
-                pulseCounter = (pulseCounter+1)%10;
+                pulseCounter = (pulseCounter+1)%20;
                 if(pulseCounter==0)out.println("9");
 
                 if(out.checkError() || Thread.interrupted()){
@@ -117,11 +117,11 @@ public class Listener implements Runnable {
                 }
 
                 if( messageQueue.size() > 0){
-                    Log.e("Sending","");
+                    //Log.e("Sending","");
                     out.println(messageQueue.removeFirst());
                 }
                 try{
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 }catch (InterruptedException e){
                     e.printStackTrace();
                     return;
@@ -152,7 +152,7 @@ public class Listener implements Runnable {
          9 Get: Pulse Send: Pulse
      */
     private void processMessages(String message){
-        if(message.charAt(0)!='9')Log.e("Listener: ", message);
+        //if(message.charAt(0)!='9')Log.e("Listener: ", message);
         if(message.charAt(0)=='0') {
             final Vector<Coupon> initialCoupons = new Vector<>();
             message = message.substring(1);
@@ -232,6 +232,7 @@ public class Listener implements Runnable {
                     break;
                 }
             }
+
             final Coupon gainedFinal = gained;
             RecyclerView.Adapter tempAdapter = null;
             if(CouponsFragment.recyclerView != null){
@@ -239,6 +240,7 @@ public class Listener implements Runnable {
             }
             final RecyclerView.Adapter adapter = tempAdapter;
             if(tokens[0].equals("Yes")){
+                AppState.getInstance().attempting = false;
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -250,6 +252,7 @@ public class Listener implements Runnable {
                     }
                 });
             }else{
+                AppState.getInstance().attempting = false;
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

@@ -15,6 +15,7 @@ public class AppState {
     public Listener listener;
     Thread listenerThread;
     public OnlinePerson user;
+    public boolean attempting;
     public static AppState getInstance() {
         return ourInstance;
     }
@@ -25,6 +26,7 @@ public class AppState {
         gainedCoupons = new Vector<>();
         onlinePeople = new Vector<>();
         user = new OnlinePerson();
+        attempting = false;
     }
     int removeCoupon(String hash){
         for (int i =0;i<coupons.size();i++){

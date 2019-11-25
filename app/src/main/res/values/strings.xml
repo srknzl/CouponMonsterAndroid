@@ -16,7 +16,7 @@
 
     <string name="text_options_welcome"> Settings: </string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_home">Play</string>
     <string name="menu_online">Online People</string>
     <string name="menu_options">Options</string>
 
@@ -44,5 +44,6 @@
 
     <string name="coupon_fragment_text">Coupons you won: </string>
     <string name="gained_coupons">Gained Coupons</string>
+    <string name="cancel_button">Cancel</string>
 
 </resources>

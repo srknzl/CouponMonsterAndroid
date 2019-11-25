@@ -14,10 +14,12 @@ public class UsernameChangeThread implements Runnable {
     private Socket socket;
     public String name;
     public String username;
+    private String currentUsername;
     public boolean result = false;
-    public UsernameChangeThread(String name,String username){
+    public UsernameChangeThread(String name,String username,String currentUsername){
         this.name = name;
         this.username = username;
+        this.currentUsername = currentUsername;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class UsernameChangeThread implements Runnable {
             e.printStackTrace();
             return;
         }
-        out.println("8" + this.name + "|" + this.username);
+        out.println("8" + this.name + "|" + this.username + "|" + currentUsername);
         while (true){
             out.println("9");
 

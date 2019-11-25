@@ -15,7 +15,7 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/coupon_number"
+            android:id="@+id/gained_coupon_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -30,7 +30,7 @@
             tools:ignore="HardcodedText"/>
 
         <TextView
-            android:id="@+id/coupon_hash"
+            android:id="@+id/gained_coupon_hash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="52dp"
@@ -39,44 +39,30 @@
             android:textAlignment="center"
             android:textColor="#037c05"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/coupon_reward"
+            app:layout_constraintBottom_toTopOf="@+id/gained_coupon_reward"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/coupon_number"
+            app:layout_constraintTop_toBottomOf="@+id/gained_coupon_number"
             app:layout_constraintVertical_bias="1.0"
-            tools:ignore="HardcodedText"/>
+            tools:ignore="HardcodedText" />
 
         <TextView
-            android:id="@+id/coupon_reward"
+            android:id="@+id/gained_coupon_reward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="88dp"
             android:padding="5dp"
             android:text="100 tl discount on 1000 tl shopping"
             android:textAlignment="center"
             android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@+id/coupon_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="HardcodedText"/>
-
-        <Button
-            android:id="@+id/coupon_button"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:background="@drawable/responsive_button"
-            android:padding="10dp"
-            android:text="Earn this coupon!"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="HardcodedText">
+            tools:ignore="HardcodedText" />
 
-        </Button>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

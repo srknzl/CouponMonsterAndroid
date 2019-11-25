@@ -41,17 +41,20 @@ public class OptionsFragment extends Fragment {
         changeUserdataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UsernameChangeThread t = new UsernameChangeThread(nameEditText.getText().toString(),usernameEditText.getText().toString());
+                UsernameChangeThread t = new UsernameChangeThread(nameEditText.getText().toString(),usernameEditText.getText().toString(),AppState.getInstance().user.username);
                 Thread runner = new Thread(t);
                 runner.start();
                 try {
                     runner.join();
                     if(t.result){
-                        Toast.makeText(getContext(),"Username changed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(),"Username and name changed", Toast.LENGTH_LONG).show();
                         nameEditText.setText(t.name);
                         usernameEditText.setText(t.username);
+                        AppState.getInstance().user.username = t.username;
+                        AppState.getInstance().user.name = t.name;
                     }else{
-                        Toast.makeText(getContext(),"Username taken", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(),"Username taken, name updated", Toast.LENGTH_LONG).show();
+                        AppState.getInstance().user.name = t.name;
                     }
                 }catch (InterruptedException e){
                     Toast.makeText(getContext(),"Cannot change", Toast.LENGTH_LONG).show();
@@ -61,7 +64,11 @@ public class OptionsFragment extends Fragment {
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getContext()!=null)((MainActivity)getContext()).connect();
+                if(AppState.getInstance().listener == null){
+                    if(getContext()!=null)((MainActivity)getContext()).connect();
+                }else{
+                    Toast.makeText(getContext(),"Already connected",Toast.LENGTH_LONG).show();
+                }
             }
         });
         return root;

@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home,
                 R.id.nav_online,
-                R.id.nav_options)
+                R.id.nav_options,
+                R.id.nav_coupons)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         if(appState.listenerThread != null)appState.listenerThread.interrupt();
         appState.listenerThread = null;
         appState.listener = null;
+        appState.connected = false;
         ((TextView)this.findViewById(R.id.connectionStatus)).setText(R.string.appbar_notconnected);
 
         Listener listener = new Listener(this);

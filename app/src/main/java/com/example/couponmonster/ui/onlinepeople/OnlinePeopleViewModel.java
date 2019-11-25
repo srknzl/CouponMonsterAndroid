@@ -8,7 +8,7 @@ import com.example.couponmonster.AppState;
 
 public class OnlinePeopleViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    public static MutableLiveData<String> mText;
 
     public OnlinePeopleViewModel() {
         mText = new MutableLiveData<>();

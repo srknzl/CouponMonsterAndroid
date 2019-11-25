@@ -12,11 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.couponmonster.Data.Coupon;
 import com.example.couponmonster.Data.OnlinePerson;
 import com.example.couponmonster.ui.CouponAdapter;
 import com.example.couponmonster.ui.OnlineGridAdapter;
+import com.example.couponmonster.ui.coupons.CouponsFragment;
 import com.example.couponmonster.ui.home.HomeFragment;
+import com.example.couponmonster.ui.onlinepeople.OnlinePeopleViewModel;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -120,6 +124,7 @@ public class Listener implements Runnable {
                     Thread.sleep(100);
                 }catch (InterruptedException e){
                     e.printStackTrace();
+                    return;
                 }
             }
 
@@ -220,11 +225,28 @@ public class Listener implements Runnable {
             }
         }else if(message.charAt(0)=='3'){
             String[] tokens = message.substring(1).split("\\|");
+            Coupon gained = null;
+            for (Coupon c : AppState.getInstance().coupons) {
+                if (c.getHash().equals(tokens[1])) {
+                    gained = new Coupon(c);
+                    break;
+                }
+            }
+            final Coupon gainedFinal = gained;
+            RecyclerView.Adapter tempAdapter = null;
+            if(CouponsFragment.recyclerView != null){
+                tempAdapter = CouponsFragment.recyclerView.getAdapter();
+            }
+            final RecyclerView.Adapter adapter = tempAdapter;
             if(tokens[0].equals("Yes")){
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(context, "Success!", Toast.LENGTH_LONG).show();
+                        if(gainedFinal != null){
+                            AppState.getInstance().gainedCoupons.add(gainedFinal);
+                            if(adapter != null)adapter.notifyItemInserted(adapter.getItemCount()-1);
+                        }
                     }
                 });
             }else{
@@ -350,9 +372,11 @@ public class Listener implements Runnable {
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if(OnlinePeopleViewModel.mText!=null)OnlinePeopleViewModel.mText.setValue(AppState.getInstance().onlinePeople.size() + " Online Users");
                     GridView onlinePeople = context.findViewById(R.id.online_people);
                     if(onlinePeople != null){
                         ((OnlineGridAdapter)onlinePeople.getAdapter()).notifyDataSetChanged();
+                        onlinePeople.invalidateViews();
                     }
                 }
             });

@@ -8,8 +8,9 @@ import java.util.Vector;
 
 public class AppState {
     private static final AppState ourInstance = new AppState();
-    boolean connected;
+    public boolean connected;
     public Vector<Coupon> coupons;
+    public Vector<Coupon> gainedCoupons;
     public Vector<OnlinePerson> onlinePeople;
     public Listener listener;
     Thread listenerThread;
@@ -21,6 +22,7 @@ public class AppState {
     private AppState() {
         connected = false;
         coupons = new Vector<>();
+        gainedCoupons = new Vector<>();
         onlinePeople = new Vector<>();
         user = new OnlinePerson();
     }

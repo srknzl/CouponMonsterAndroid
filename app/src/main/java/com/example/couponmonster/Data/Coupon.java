@@ -18,6 +18,16 @@ public class Coupon {
         this.reward = reward;
         this.solveTime = solveTime;
     }
+    public Coupon(){
+        this.hash = "";
+        this.problem = "";
+        this.reward = "";
+    }
+    public Coupon(Coupon another) {
+        this.hash = another.hash;
+        this.reward = another.reward;
+        this.problem = another.problem;
+    }
 
     public String getProblem(){
         return this.problem;

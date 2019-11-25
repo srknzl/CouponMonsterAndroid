@@ -21,5 +21,11 @@
         android:name="com.example.couponmonster.ui.options.OptionsFragment"
         android:label="@string/menu_options"
         tools:layout="@layout/fragment_options" />
+    <fragment
+        android:id="@+id/nav_coupons"
+        android:name="com.example.couponmonster.ui.coupons.CouponsFragment"
+        android:label="@string/gained_coupons"
+        tools:layout="@layout/fragment_coupons"
+        />
 
 </navigation>

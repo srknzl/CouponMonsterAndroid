@@ -42,4 +42,7 @@
     <string name="appbar_connected">Connected</string>
     <string name="appbar_notconnected">Not connected</string>
 
+    <string name="coupon_fragment_text">Coupons you won: </string>
+    <string name="gained_coupons">Gained Coupons</string>
+
 </resources>

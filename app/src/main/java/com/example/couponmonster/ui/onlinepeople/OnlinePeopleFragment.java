@@ -20,7 +20,7 @@ import com.example.couponmonster.ui.OnlineGridAdapter;
 
 public class OnlinePeopleFragment extends Fragment {
 
-    public GridView gridView;
+    private GridView gridView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -39,6 +39,7 @@ public class OnlinePeopleFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable String s) {
                     textView.setText(s);
+                    gridView.invalidateViews();
                 }
             });
             OnlineGridAdapter onlineGridAdapter = new OnlineGridAdapter( this.getContext());

@@ -4,14 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +17,6 @@ import com.example.couponmonster.Data.OnlinePerson;
 import com.example.couponmonster.ui.CouponAdapter;
 import com.example.couponmonster.ui.OnlineGridAdapter;
 import com.example.couponmonster.ui.home.HomeFragment;
-import com.example.couponmonster.ui.onlinepeople.OnlinePeopleFragment;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,18 +29,19 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class Listener implements Runnable {
-    public static Activity context;
-    public Socket socket;
-    public Scanner in;
+    private Activity context;
+    private Socket socket;
     public PrintWriter out;
-    public LinkedList<String> messageQueue;
+    private LinkedList<String> messageQueue;
+    private int pulseCounter = 0;
 
-    public Listener(Context context) {
-        Listener.context = (Activity) context;
+
+    Listener(Context context) {
+        this.context = (Activity) context;
         this.socket = new Socket();
         this.messageQueue = new LinkedList<>();
     }
-    public void close(){
+    void close(){
         try{
             socket.close();
         }catch (IOException e){
@@ -60,9 +56,10 @@ public class Listener implements Runnable {
             SocketAddress socketAddress = new InetSocketAddress(inetAddress,6000);
             socket.connect(socketAddress);
             appState.connected = true;
-            in = new Scanner(socket.getInputStream());
+            Scanner in = new Scanner(socket.getInputStream());
             out = new PrintWriter(socket.getOutputStream(),true);
             out.println("0" + appState.user.name + "|" + appState.user.username);
+            AppState.getInstance().listener.addMessage("7");
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -70,7 +67,8 @@ public class Listener implements Runnable {
                 }
             });
             while(true){
-                out.println("9");
+                pulseCounter = (pulseCounter+1)%10;
+                if(pulseCounter==0)out.println("9");
 
                 if(out.checkError() || Thread.interrupted()){
                     appState.connected = false;
@@ -80,7 +78,9 @@ public class Listener implements Runnable {
                     context.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            HomeFragment.recyclerView.getAdapter().notifyDataSetChanged();
+                            if(HomeFragment.recyclerView != null && HomeFragment.recyclerView.getAdapter() != null){
+                                HomeFragment.recyclerView.getAdapter().notifyDataSetChanged();
+                            }
                         }
                     });
                     appState.onlinePeople = new Vector<>();
@@ -103,7 +103,7 @@ public class Listener implements Runnable {
                         socket.close();
                     }catch (IOException ee){
                         ee.printStackTrace();
-                    };
+                    }
                     return;
                 }
 
@@ -146,31 +146,25 @@ public class Listener implements Runnable {
          8 Send: New name and username Get: Yes/No
          9 Get: Pulse Send: Pulse
      */
-    public void processMessages(String message){
+    private void processMessages(String message){
         if(message.charAt(0)!='9')Log.e("Listener: ", message);
         if(message.charAt(0)=='0') {
             final Vector<Coupon> initialCoupons = new Vector<>();
             message = message.substring(1);
             String[] coupons = message.split("[;]");
-            for (int i =0;i<coupons.length;i++){
-                String[] fields = coupons[i].split("\\|");
-                if(fields.length != 5)continue;
+            for (String coupon : coupons) {
+                String[] fields = coupon.split("\\|");
+                if (fields.length != 5) continue;
                 final String hash = fields[0];
                 final String problem = fields[1];
-                final int answer;
-                try {
-                    answer = Integer.parseInt(fields[2]);
-                }catch (NumberFormatException e) {
-                    continue;
-                }
-                final String reward = fields[3];
+                final String reward = fields[2];
                 final int solveTime;
                 try {
-                    solveTime = Integer.parseInt(fields[4]);
-                }catch (NumberFormatException e) {
+                    solveTime = Integer.parseInt(fields[3]);
+                } catch (NumberFormatException e) {
                     continue;
                 }
-                initialCoupons.add(new Coupon(hash,problem,reward,solveTime));
+                initialCoupons.add(new Coupon(hash, problem, reward, solveTime));
             }
             context.runOnUiThread(new Runnable() {
                 @Override
@@ -178,7 +172,7 @@ public class Listener implements Runnable {
                     AppState.getInstance().coupons = initialCoupons;
                     final CouponAdapter couponAdapter = new CouponAdapter( context, AppState.getInstance().coupons);
                     HomeFragment.recyclerView.setAdapter(couponAdapter);
-                    Log.e("Enter",AppState.getInstance().coupons.toString());
+                    //Log.e("Enter",AppState.getInstance().coupons.toString());
                 }
             });
 
@@ -189,16 +183,10 @@ public class Listener implements Runnable {
             if(fields.length != 5)return;
             final String hash = fields[0];
             final String problem = fields[1];
-            final int answer;
-            try {
-                answer = Integer.parseInt(fields[2]);
-            }catch (NumberFormatException e) {
-                return;
-            }
-            final String reward = fields[3];
+            final String reward = fields[2];
             final int solveTime;
             try {
-                solveTime = Integer.parseInt(fields[4]);
+                solveTime = Integer.parseInt(fields[3]);
             }catch (NumberFormatException e) {
                 return;
             }
@@ -206,7 +194,9 @@ public class Listener implements Runnable {
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    HomeFragment.recyclerView.getAdapter().notifyItemInserted(AppState.getInstance().coupons.size()-1);
+                    if(HomeFragment.recyclerView !=null && HomeFragment.recyclerView.getAdapter() != null){
+                        HomeFragment.recyclerView.getAdapter().notifyItemInserted(AppState.getInstance().coupons.size()-1);
+                    }
                 }
             });
         }else if(message.charAt(0)=='2'){
@@ -218,7 +208,9 @@ public class Listener implements Runnable {
                 context.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        HomeFragment.recyclerView.getAdapter().notifyItemRemoved(ret);
+                        if(HomeFragment.recyclerView !=null && HomeFragment.recyclerView.getAdapter() != null){
+                            HomeFragment.recyclerView.getAdapter().notifyItemRemoved(ret);
+                        }
                         Toast.makeText(context,username+" has won a coupon with " + difficulty + " difficulty!",Toast.LENGTH_LONG).show();
                     }
                 });
@@ -244,6 +236,7 @@ public class Listener implements Runnable {
                 });
             }
         }else if(message.charAt(0)=='4'){
+            /*
             String[] tokens = message.substring(1).split("\\|");
             String result = tokens[0];
             final String hash = tokens[1];
@@ -255,6 +248,7 @@ public class Listener implements Runnable {
                         final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View questionView = inflater.inflate(R.layout.question_dialog, null);
                         TextView question = questionView.findViewById(R.id.question);
+
                         Coupon temp = null;
                         for (Coupon c : AppState.getInstance().coupons) {
                             if (c.getHash().equals(hash)) {
@@ -290,11 +284,19 @@ public class Listener implements Runnable {
                             }
                         }.start();
                         Button qb = questionView.findViewById(R.id.question_button);
+                        final EditText answerView = questionView.findViewById(R.id.answer);
+                        final Button minusButton = questionView.findViewById(R.id.minus_button);
+                        minusButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                answerView.setText("-" + answerView.getText().toString());
+                            }
+                        });
                         qb.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 if (AppState.getInstance().listener != null && AppState.getInstance().listener.out != null) {
-                                    EditText answerView = questionView.findViewById(R.id.answer);
+
                                     AppState.getInstance().listener.addMessage("3" + SingleCoupon.getHash() + "|" + answerView.getText().toString());
                                     Toast.makeText(context, "Submitted...", Toast.LENGTH_LONG).show();
                                     dialog.dismiss();
@@ -318,6 +320,7 @@ public class Listener implements Runnable {
                     }
                 });
             }
+            */
         } else if(message.charAt(0)=='6'){
             String[] tokens = message.substring(1).split("\\|");
             final String name = tokens[0];
@@ -327,26 +330,34 @@ public class Listener implements Runnable {
             AppState.getInstance().user.username = username;
             AppState.getInstance().user.score = Integer.parseInt(score);
         }else if(message.charAt(0)=='7'){
-            final Vector<OnlinePerson> onlinePeople = new Vector<>();
+            Vector<OnlinePerson> onlinePeople = new Vector<>();
             message = message.substring(1);
             String[] users = message.split("[;]");
-            for (int i =0;i<users.length;i++){
-                String[] fields = users[i].split("\\|");
-                if(fields.length != 3)continue;
+            //Log.e("Users",users[0].toString());
+            for (String user : users) {
+                String[] fields = user.split("\\|");
+                if (fields.length != 3) continue;
                 final String name = fields[0];
                 final String username = fields[1];
                 final int score = Integer.parseInt(fields[2]);
-                onlinePeople.add(new OnlinePerson(name,username,score));
+                //Log.e("adding",name+","+username+","+score);
+                onlinePeople.add(new OnlinePerson(name, username, score));
             }
-            AppState.getInstance().onlinePeople = onlinePeople;
+            AppState.getInstance().onlinePeople.clear();
+            for (OnlinePerson p: onlinePeople) {
+                AppState.getInstance().onlinePeople.add(p);
+            }
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    AppState.getInstance().onlinePeople = onlinePeople;
-                    ((OnlineGridAdapter)OnlinePeopleFragment.gridView.getAdapter()).notifyDataSetChanged();
+                    GridView onlinePeople = context.findViewById(R.id.online_people);
+                    if(onlinePeople != null){
+                        ((OnlineGridAdapter)onlinePeople.getAdapter()).notifyDataSetChanged();
+                    }
                 }
             });
         }else if(message.charAt(0)=='8'){
+            /*
             String[] tokens = message.substring(1).split("\\|");
             String name = tokens[1];
             String username = tokens[2];
@@ -369,9 +380,12 @@ public class Listener implements Runnable {
                 });
                 AppState.getInstance().user.name = name;
             }
+        */
         }
+
     }
     public void addMessage(String message){
         messageQueue.offer(message);
     }
 }
+

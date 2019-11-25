@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public class AppState {
     private static final AppState ourInstance = new AppState();
-    public boolean connected;
+    boolean connected;
     public Vector<Coupon> coupons;
     public Vector<OnlinePerson> onlinePeople;
     public Listener listener;
@@ -24,7 +24,7 @@ public class AppState {
         onlinePeople = new Vector<>();
         user = new OnlinePerson();
     }
-    public int removeCoupon(String hash){
+    int removeCoupon(String hash){
         for (int i =0;i<coupons.size();i++){
             Coupon c = coupons.elementAt(i);
             if(c.getHash().equals(hash)){

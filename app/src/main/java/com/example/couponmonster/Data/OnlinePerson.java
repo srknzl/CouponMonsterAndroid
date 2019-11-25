@@ -1,5 +1,7 @@
 package com.example.couponmonster.Data;
 
+import androidx.annotation.NonNull;
+
 public class OnlinePerson implements Comparable<OnlinePerson>{
     public String name;
     public String username;
@@ -18,6 +20,11 @@ public class OnlinePerson implements Comparable<OnlinePerson>{
 
     @Override
     public int compareTo(OnlinePerson o) {
-        return Integer.compare(this.score, o.score);
+        return Integer.compare(o.score, this.score);
+    }
+    @Override
+    @NonNull
+    public String toString(){
+        return "name: " + this.name + ", username: " + this.username + ", score: " + this.score;
     }
 }

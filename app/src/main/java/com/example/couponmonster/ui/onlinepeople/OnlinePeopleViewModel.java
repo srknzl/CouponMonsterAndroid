@@ -5,9 +5,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.couponmonster.AppState;
-import com.example.couponmonster.Data.OnlinePerson;
-
-import java.util.Vector;
 
 public class OnlinePeopleViewModel extends ViewModel {
 
@@ -15,8 +12,6 @@ public class OnlinePeopleViewModel extends ViewModel {
 
     public OnlinePeopleViewModel() {
         mText = new MutableLiveData<>();
-        Vector<OnlinePerson> onlinePeopleVec = new Vector<>();
-
 
         mText.setValue(AppState.getInstance().onlinePeople.size() + " Online Users");
     }

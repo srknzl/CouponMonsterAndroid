@@ -1,5 +1,6 @@
 package com.example.couponmonster;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
 
         Listener listener = new Listener(this);
         appState.listener = listener;
-        Log.e("Not null",listener.toString());
         Thread listenerThread = new Thread(listener);
         appState.listenerThread = listenerThread;
         listenerThread.start();

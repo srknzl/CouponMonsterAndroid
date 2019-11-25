@@ -22,38 +22,39 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 
+import static com.example.couponmonster.R.layout.fragment_home;
 
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
     public static RecyclerView recyclerView;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        final View root = inflater.inflate(R.layout.fragment_home, container, false);
-        return root;
+        return inflater.inflate(fragment_home, container, false);
     }
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        // TODO: Use the ViewModel
-        final TextView textView = this.getView().findViewById(R.id.text_home);
-        homeViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        recyclerView = this.getView().findViewById(R.id.coupons);
-        CouponAdapter couponAdapter = new CouponAdapter(this.getContext(), AppState.getInstance().coupons);
-        recyclerView.setAdapter(couponAdapter);
-        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(this.getContext());
-        flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
-        flexboxLayoutManager.setAlignItems(AlignItems.CENTER);
-        flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
-        flexboxLayoutManager.setJustifyContent(JustifyContent.SPACE_EVENLY);
-        recyclerView.setLayoutManager(flexboxLayoutManager);
+        HomeViewModel homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        if(this.getView() != null){
+            final TextView textView = this.getView().findViewById(R.id.text_home);
+            homeViewModel.getText().observe(this, new Observer<String>() {
+                @Override
+                public void onChanged(@Nullable String s) {
+                    textView.setText(s);
+                }
+            });
+            recyclerView = this.getView().findViewById(R.id.coupons);
+            CouponAdapter couponAdapter = new CouponAdapter(this.getContext(), AppState.getInstance().coupons);
+            recyclerView.setAdapter(couponAdapter);
+            FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(this.getContext());
+            flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
+            flexboxLayoutManager.setAlignItems(AlignItems.CENTER);
+            flexboxLayoutManager.setFlexWrap(FlexWrap.WRAP);
+            flexboxLayoutManager.setJustifyContent(JustifyContent.SPACE_EVENLY);
+            recyclerView.setLayoutManager(flexboxLayoutManager);
+        }
+
     }
 
 }

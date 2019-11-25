@@ -14,36 +14,37 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.couponmonster.AppState;
-import com.example.couponmonster.Data.OnlinePerson;
 import com.example.couponmonster.R;
 import com.example.couponmonster.ui.OnlineGridAdapter;
 
-import java.util.Vector;
 
 public class OnlinePeopleFragment extends Fragment {
 
-    private OnlinePeopleViewModel onlinePeopleViewModel;
-    public static GridView gridView;
+    public GridView gridView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        onlinePeopleViewModel =
-                ViewModelProviders.of(this).get(OnlinePeopleViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_online, container, false);
-        final TextView textView = root.findViewById(R.id.text_online);
-        gridView = root.findViewById(R.id.online_people);
-        createGridView(AppState.getInstance().onlinePeople);
-        onlinePeopleViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        return root;
+        AppState.getInstance().listener.addMessage("7");
+        return inflater.inflate(R.layout.fragment_online, container, false);
     }
-    private void createGridView(Vector<OnlinePerson> onlinePeopleVec){
-        OnlineGridAdapter onlineGridAdapter = new OnlineGridAdapter( this.getContext(), onlinePeopleVec);
-        gridView.setAdapter(onlineGridAdapter);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        OnlinePeopleViewModel onlinePeopleViewModel = ViewModelProviders.of(this).get(OnlinePeopleViewModel.class);
+        super.onActivityCreated(savedInstanceState);
+        if(this.getView() != null){
+            this.gridView = this.getView().findViewById(R.id.online_people);
+            final TextView textView = this.getView().findViewById(R.id.text_online);
+            onlinePeopleViewModel.getText().observe(this, new Observer<String>() {
+                @Override
+                public void onChanged(@Nullable String s) {
+                    textView.setText(s);
+                }
+            });
+            OnlineGridAdapter onlineGridAdapter = new OnlineGridAdapter( this.getContext());
+            gridView.setAdapter(onlineGridAdapter);
+        }
+
+
     }
 }

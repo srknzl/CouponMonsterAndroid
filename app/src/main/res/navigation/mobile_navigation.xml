@@ -7,23 +7,23 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.couponmonster.ui.home.HomeFragment"
+        android:name="com.srknzl.couponmonster.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_online"
-        android:name="com.example.couponmonster.ui.onlinepeople.OnlinePeopleFragment"
+        android:name="com.srknzl.couponmonster.ui.onlinepeople.OnlinePeopleFragment"
         android:label="@string/menu_online"
         tools:layout="@layout/fragment_online" />
     <fragment
         android:id="@+id/nav_options"
-        android:name="com.example.couponmonster.ui.options.OptionsFragment"
+        android:name="com.srknzl.couponmonster.ui.options.OptionsFragment"
         android:label="@string/menu_options"
         tools:layout="@layout/fragment_options" />
     <fragment
         android:id="@+id/nav_coupons"
-        android:name="com.example.couponmonster.ui.coupons.CouponsFragment"
+        android:name="com.srknzl.couponmonster.ui.coupons.CouponsFragment"
         android:label="@string/gained_coupons"
         tools:layout="@layout/fragment_coupons"
         />

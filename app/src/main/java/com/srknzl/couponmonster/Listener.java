@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -41,7 +40,32 @@ public class Listener implements Runnable {
     public PrintWriter out;
     private LinkedList<String> messageQueue;
     private int pulseCounter = 0;
+    /*
+          0 Send: Hello -> Get: Welcome + initial coupons
+          1 Get: New Coupon
+          2 Get: Clear coupon
+          3 Send: Answer -> Get: True/False
+          4 Send: Selection -> Get:True/False
+          5 Send: Dismiss
+          6 Get: User data
+          7 Get: All users
+          8 Send: New name and username Get: Yes/No
+          9 Get: Pulse Send: Pulse
+      */
+    public enum MessageTypes {
+        Welcome('0'),
+        NewCoupon('1'),
+        CouponClear('2'),
+        AnswerResult('3'),
+        MyUserData('6'),
+        AllUsersData('7');
 
+        public final char Message;
+
+        MessageTypes(char id){
+            this.Message = id;
+        }
+    }
 
     Listener(Context context) {
         this.context = (Activity) context;
@@ -156,8 +180,7 @@ public class Listener implements Runnable {
          9 Get: Pulse Send: Pulse
      */
     private void processMessages(String message){
-        if(message.charAt(0)!='9') Log.e("Listener: ", message);
-        if(message.charAt(0)=='0') {
+        if(message.charAt(0)==MessageTypes.Welcome.Message) {
             final Vector<Coupon> initialCoupons = new Vector<>();
             message = message.substring(1);
             String[] coupons = message.split("[;]");
@@ -186,7 +209,7 @@ public class Listener implements Runnable {
             });
 
         }
-        else if(message.charAt(0)=='1'){
+        else if(message.charAt(0)==MessageTypes.NewCoupon.Message){
             message = message.substring(1);
             String[] fields = message.split("\\|");
             if(fields.length != 4)return;
@@ -208,7 +231,7 @@ public class Listener implements Runnable {
                     }
                 }
             });
-        }else if(message.charAt(0)=='2'){
+        }else if(message.charAt(0)==MessageTypes.CouponClear.Message){
             String[] tokens = message.substring(1).split("\\|");
             final String username = tokens[2];
             final String difficulty = tokens[3];
@@ -227,7 +250,7 @@ public class Listener implements Runnable {
                     AppState.getInstance().user.score += Integer.parseInt(difficulty);
                 }
             }
-        }else if(message.charAt(0)=='3'){
+        }else if(message.charAt(0)==MessageTypes.AnswerResult.Message){
             String[] tokens = message.substring(1).split("\\|");
             Coupon gained = null;
             for (Coupon c : AppState.getInstance().coupons) {
@@ -264,93 +287,7 @@ public class Listener implements Runnable {
                     }
                 });
             }
-        }else if(message.charAt(0)=='4'){
-            /*
-            String[] tokens = message.substring(1).split("\\|");
-            String result = tokens[0];
-            final String hash = tokens[1];
-            if(result.equals("Yes")){
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View questionView = inflater.inflate(R.layout.question_dialog, null);
-                        TextView question = questionView.findViewById(R.id.question);
-
-                        Coupon temp = null;
-                        for (Coupon c : AppState.getInstance().coupons) {
-                            if (c.getHash().equals(hash)) {
-                                temp = c;
-                            }
-                        }
-                        final Coupon SingleCoupon = temp;
-                        if (SingleCoupon == null) {
-                            Toast.makeText(context, "Something wrong happened", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        question.setText(SingleCoupon.getProblem());
-                        builder.setView(questionView);
-                        final AlertDialog dialog = builder.create();
-                        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                if (AppState.getInstance().listener != null)
-                                    AppState.getInstance().listener.addMessage("5" + SingleCoupon.getHash());
-                            }
-                        });
-                        dialog.show();
-
-                        new CountDownTimer(SingleCoupon.getSolveTime() * 1000, 1000) {
-                            Resources res = context.getResources();
-
-                            public void onTick(long millisUntilFinished) {
-                                ((TextView) questionView.findViewById(R.id.remaining_time)).setText(String.format(res.getString(R.string.question_remaining), millisUntilFinished / 1000));
-                            }
-
-                            public void onFinish() {
-                                dialog.dismiss();
-                            }
-                        }.start();
-                        Button qb = questionView.findViewById(R.id.question_button);
-                        final EditText answerView = questionView.findViewById(R.id.answer);
-                        final Button minusButton = questionView.findViewById(R.id.minus_button);
-                        minusButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                answerView.setText("-" + answerView.getText().toString());
-                            }
-                        });
-                        qb.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (AppState.getInstance().listener != null && AppState.getInstance().listener.out != null) {
-
-                                    AppState.getInstance().listener.addMessage("3" + SingleCoupon.getHash() + "|" + answerView.getText().toString());
-                                    Toast.makeText(context, "Submitted...", Toast.LENGTH_LONG).show();
-                                    dialog.dismiss();
-                                } else {
-                                    Toast.makeText(context, "You cannot submit because you are not connected anymore.", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-                    }
-                });
-            }else{
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogTheme);
-                        builder.setMessage("Sorry someone else solving the coupon's question!");
-                        builder.setTitle("Busy!");
-                        builder.setPositiveButton(R.string.ok,null);
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-                    }
-                });
-            }
-            */
-        } else if(message.charAt(0)=='6'){
+        } else if(message.charAt(0)==MessageTypes.MyUserData.Message){
             String[] tokens = message.substring(1).split("\\|");
             final String name = tokens[0];
             final String username = tokens[1];
@@ -358,7 +295,7 @@ public class Listener implements Runnable {
             AppState.getInstance().user.name = name;
             AppState.getInstance().user.username = username;
             AppState.getInstance().user.score = Integer.parseInt(score);
-        }else if(message.charAt(0)=='7'){
+        }else if(message.charAt(0)==MessageTypes.AllUsersData.Message){
             Vector<OnlinePerson> onlinePeople = new Vector<>();
             message = message.substring(1);
             String[] users = message.split("[;]");
@@ -388,33 +325,7 @@ public class Listener implements Runnable {
                     }
                 }
             });
-        }else if(message.charAt(0)=='8'){
-            /*
-            String[] tokens = message.substring(1).split("\\|");
-            String name = tokens[1];
-            String username = tokens[2];
-            if(tokens[0].equals("Yes")){
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context,"Username and name changed", Toast.LENGTH_LONG).show();
-                    }
-                });
-                AppState.getInstance().user.username = username;
-                AppState.getInstance().user.name = name;
-
-            }else{
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context,"Username taken, name is updated", Toast.LENGTH_LONG).show();
-                    }
-                });
-                AppState.getInstance().user.name = name;
-            }
-        */
         }
-
     }
     public void addMessage(String message){
         messageQueue.offer(message);

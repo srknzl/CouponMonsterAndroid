@@ -1,4 +1,4 @@
-# couponmonsterandroid
+# Coupon Monster
 Android frontend of Coupon Monster Project Cmpe436
 
 Play store link: https://play.google.com/store/apps/details?id=com.srknzl.couponmonster
